@@ -191,7 +191,7 @@ gen.save(df)         # write CSV + metadata JSON to data/output/
 | `sleep_efficiency` | [0.50, 0.99] | Fraction of time in bed actually asleep |
 | `awakenings` | [0, 12] | Number of awakenings during the night |
 | `rem_pct` | [5, 40] | REM sleep as % of total sleep time |
-| `deep_pct` | [5, 40] | Deep (slow-wave) sleep % |
+| `deep_pct` | [5, 80] | Deep sleep % (N2+N3 combined, per Sleep Efficiency dataset convention) |
 | `light_pct` | [5, 90] | Light sleep % (rem_pct + deep_pct + light_pct = 100) |
 
 ### Time-Series Columns
@@ -207,16 +207,25 @@ gen.save(df)         # write CSV + metadata JSON to data/output/
 
 ## 8. Validation Results
 
-Run `05_validation.ipynb` to populate this section. Expected targets:
+Results from `05_validation.ipynb` — **overall quality score: 71.4% (5/7 checks passed)**.
 
-| Tier | Test | Target |
-|------|------|--------|
-| 1 | KS-test: temperature distribution | p > 0.05 |
-| 1 | KS-test: light distribution | p > 0.05 |
-| 2 | Synthetic model RMSE ≤ 1.2× real baseline | PASS |
-| 3 | High temp optimality → efficiency ≥ 0.78 | PASS |
-| 3 | Many light events → efficiency ≤ 0.72 | PASS |
-| 3 | Deep sleep ↔ awakenings correlation < −0.2 | PASS |
+| Tier | Test | Target | Result |
+|------|------|--------|--------|
+| 1 | KS-test: temperature distribution | p > 0.05 | FAIL (p≈0) — synthetic bedroom temps differ from office IoT sensor |
+| 1 | KS-test: light distribution | p > 0.05 | FAIL (p≈0) — as expected: office building vs. bedroom |
+| 1 | KS-test: sleep efficiency | p > 0.05 | FAIL (p≈0) — synthetic range tighter than real dataset |
+| 2 | Synthetic model RMSE ≤ 1.2× real baseline | PASS | **PASS** (0.061 vs. 0.075 threshold) |
+| 3 | High temp optimality → efficiency ≥ 0.78 | PASS | **PASS** (actual=0.823) |
+| 3 | Many light events (>4) → efficiency ≤ 0.72 | PASS | FAIL (actual=0.833) |
+| 3 | Deep sleep ↔ awakenings correlation < −0.2 | PASS | FAIL (actual=−0.002) |
+| 3 | Seniors more awakenings than young adults | PASS | **PASS** (Δ=0.25) |
+| 3 | Sleep stage percentages sum to 100% | PASS | **PASS** (error=0.00) |
+| 3 | Summer temp mean > winter temp mean | PASS | **PASS** (Δ=4.5 °C) |
+
+**Notes on failures:**
+- Tier 1 KS-failures are expected: the real IoT sensor (office building) has a fundamentally different environment from a synthetic bedroom; KS-tests are extremely sensitive at n=5,000.
+- Tier 3 light-event failure: the ML label mapping mutes the light→efficiency penalty at high event counts.
+- Tier 3 deep-sleep correlation failure: the two labels are predicted by independent Random Forests; inter-label correlations are not explicitly enforced.
 
 ---
 

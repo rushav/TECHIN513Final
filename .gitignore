@@ -13,12 +13,8 @@ venv/
 # Jupyter checkpoints
 .ipynb_checkpoints/
 
-# Generated data (large files — regenerate with notebook 04)
-data/output/synthetic_sleep_dataset_5000.csv
-data/processed/models/*.joblib
-
-# Kaggle cache (user-specific, no need to commit)
-# ~/.cache/kagglehub/ is outside the repo anyway
+# Kaggle raw downloads (auto-downloaded on first run via kagglehub)
+data/raw/
 
 # OS
 .DS_Store

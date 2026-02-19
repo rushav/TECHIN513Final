@@ -1,0 +1,114 @@
+{
+  "dataset_name": "Synthetic Sleep Environment Dataset",
+  "version": "1.0",
+  "created_by": [
+    "Rushav Dash",
+    "Lisa Li"
+  ],
+  "course": "TECHIN 513 - Signal Processing & Machine Learning",
+  "university": "University of Washington",
+  "n_sessions": 5000,
+  "sampling_interval_minutes": 5,
+  "session_duration_minutes": 480,
+  "signals": [
+    "temperature_C",
+    "light_lux",
+    "sound_dB",
+    "humidity_pct"
+  ],
+  "features": [
+    "temp_mean",
+    "temp_std",
+    "temp_min",
+    "temp_max",
+    "temp_range",
+    "temp_above_21_minutes",
+    "temp_below_18_minutes",
+    "temp_optimal_fraction",
+    "temp_mean_rate_change",
+    "temp_max_rate_change",
+    "light_mean",
+    "light_std",
+    "light_max",
+    "light_peak_lux",
+    "light_event_count",
+    "light_total_exposure_minutes",
+    "light_disruption_score",
+    "sound_mean_db",
+    "sound_std_db",
+    "sound_max_db",
+    "sound_above_55db_minutes",
+    "sound_event_count",
+    "sound_leq_db",
+    "humidity_mean",
+    "humidity_std",
+    "humidity_min",
+    "humidity_max",
+    "humidity_out_of_range_minutes",
+    "humidity_comfort_fraction"
+  ],
+  "target_variables": [
+    "sleep_efficiency",
+    "awakenings",
+    "rem_pct",
+    "deep_pct",
+    "light_pct"
+  ],
+  "source_datasets": [
+    {
+      "name": "Sleep Efficiency Dataset",
+      "kaggle": "equilibriumm/sleep-efficiency",
+      "role": "ML model training"
+    },
+    {
+      "name": "Room Occupancy Detection IoT Dataset",
+      "kaggle": "kukuroo3/room-occupancy-detection-data-iot-sensor",
+      "role": "Signal calibration (temperature, light)"
+    },
+    {
+      "name": "Smart Home Dataset with Weather",
+      "kaggle": "taranvee/smart-home-dataset-with-weather-information",
+      "role": "HVAC cycle calibration (optional)"
+    }
+  ],
+  "generation_date": "2026-02-19T14:01:08.537906",
+  "random_seed": 42,
+  "stratification": {
+    "seasons": [
+      "winter",
+      "spring",
+      "summer",
+      "fall"
+    ],
+    "sessions_per_season": 1250,
+    "age_groups": [
+      "young",
+      "middle",
+      "senior"
+    ],
+    "sensitivity_levels": [
+      "low",
+      "normal",
+      "high"
+    ]
+  },
+  "column_descriptions": {
+    "session_id": "UUID uniquely identifying this session",
+    "season": "Season when the sleep session occurred",
+    "age_group": "Young (18-34), Middle (35-59), Senior (60+)",
+    "sensitivity": "Individual environmental sensitivity level",
+    "temp_mean": "Mean bedroom temperature over the night (\u00b0C)",
+    "temp_optimal_fraction": "Fraction of night with temp in [18,21]\u00b0C",
+    "light_event_count": "Number of light-on events during the night",
+    "light_disruption_score": "Amplitude\u00d7duration sum of light events",
+    "sleep_efficiency": "Fraction of time in bed actually asleep [0.5,0.99]",
+    "awakenings": "Number of awakenings during the night [0,12]",
+    "rem_pct": "REM sleep as % of total sleep time",
+    "deep_pct": "Deep (slow-wave) sleep as % of total sleep time",
+    "light_pct": "Light sleep as % of total sleep time",
+    "ts_temperature": "JSON array of 96 temperature samples (5-min intervals)",
+    "ts_light": "JSON array of 96 light-level samples (lux)",
+    "ts_sound": "JSON array of 96 sound-level samples (dB)",
+    "ts_humidity": "JSON array of 96 humidity samples (%)"
+  }
+}

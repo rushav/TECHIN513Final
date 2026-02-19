@@ -50,12 +50,16 @@ TARGET_VARIABLES = [
     "Deep sleep percentage",
 ]
 
-# Valid output ranges used to clip predictions
+# Valid output ranges used to clip predictions.
+# Note: the Sleep Efficiency training dataset labels "Deep sleep percentage"
+# in the range 18–75 % (it includes N2/N3 combined as "deep"), so the
+# clip is set to match that distribution.  After normalization the three
+# stage columns always sum exactly to 100.
 TARGET_CLIPS = {
     "Sleep efficiency":      (0.50, 0.99),
     "Awakenings":            (0, 12),
     "REM sleep percentage":  (5, 40),
-    "Deep sleep percentage": (5, 40),
+    "Deep sleep percentage": (5, 80),
 }
 
 # Residual noise stds added after prediction (derived from real-data residuals
@@ -384,7 +388,7 @@ class SleepQualityModel:
         se   = float(np.clip(raw_preds.get("Sleep efficiency", 0.75),    0.50, 0.99))
         awk  = int(np.clip(round(raw_preds.get("Awakenings", 2)),         0,    12))
         rem  = float(np.clip(raw_preds.get("REM sleep percentage", 22),   5,    40))
-        deep = float(np.clip(raw_preds.get("Deep sleep percentage", 18),  5,    40))
+        deep = float(np.clip(raw_preds.get("Deep sleep percentage", 18),  5,    80))
 
         # ---- Normalise sleep-stage percentages to sum to 100 ----
         # Light sleep = 100 - REM - Deep; ensure everything is positive

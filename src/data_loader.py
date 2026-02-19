@@ -498,7 +498,8 @@ class DataLoader:
         fft_vals = np.abs(np.fft.rfft(temp - temp.mean()))
         # Assume 1-minute sampling; convert freq index to period in minutes
         freqs = np.fft.rfftfreq(len(temp))  # cycles per sample
-        periods_min = np.where(freqs > 0, 1.0 / freqs, np.inf)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            periods_min = np.where(freqs > 0, 1.0 / freqs, np.inf)
 
         # Focus on HVAC-plausible periods: 20–120 min
         mask = (periods_min >= 20) & (periods_min <= 120)
